@@ -199,7 +199,7 @@ class Confluence(object):
             page = self._server.confluence1.getPage(self._token, space, page)
         return page
 
-    def attachFile(self, page, space, files):
+    def attachFile(self, page, space, files, propogate = False):
         if self._token2:
             server = self._server.confluence2
             token = self._token2
@@ -230,6 +230,8 @@ class Confluence(object):
                 logging.info("done")
             except xmlrpclib.Error:
                 logging.exception("Unable to attach %s", filename)
+                if propogate :
+                    raise
             finally:
                 f.close()
 
