@@ -207,21 +207,41 @@ class Confluence(object):
             server = self._server.confluence1
             token = self._token1
         existing_page = server.getPage(token, space, page)
-        for filename in files.keys():
+        for filename, payload in files.iteritems():
             try:
                 server.removeAttachment(token, existing_page["id"], filename)
             except xmlrpclib.Fault:
                 logging.info("No existing attachment to replace")
-            content_types = {
-                "gif": "image/gif",
-                "png": "image/png",
-                "jpg": "image/jpeg",
-                "jpeg": "image/jpeg",
-                "pdf": "application/pdf",
-            }
-            extension = os.path.splitext(filename)[1:]
-            ty = content_types.get(extension, "application/binary")
-            attachment = {"fileName": filename, "contentType": ty, "comment": files[filename]}
+
+            try :
+                ty = payload["mimetype"]
+            except TypeError or KeyError :
+                content_types = {
+                    "gif": "image/gif",
+                    "png": "image/png",
+                    "jpg": "image/jpeg",
+                    "jpeg": "image/jpeg",
+                    "pdf": "application/pdf",
+                }
+
+                extension = os.path.splitext(filename)[1:]
+                ty = content_types.get(extension, "application/binary")
+
+            if isinstance (payload, str) :
+                comment = payload
+            else :
+                try :
+                    comment = payload["comment"]
+                except KeyError :
+                    comment = ""
+
+            try :
+                confluence_name = payload ["confluence_name"]
+            except TypeError or KeyError :
+                confluence_name = filename
+
+
+            attachment = {"fileName": confluence_name, "contentType": ty, "comment": comment}
             f = open(filename, "rb")
             try:
                 byts = f.read()
