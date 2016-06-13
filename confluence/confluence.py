@@ -23,6 +23,13 @@ import ssl
 import logging
 import socket
 
+
+from optparse import OptionParser
+import inspect
+
+from types import FunctionType
+
+
 # TODO: replace all of these with object methods. Leaving for backwards compatibility for now
 def attach_file(server, token, space, title, files):
     existing_page = server.confluence1.getPage(token, space, title)
@@ -215,7 +222,7 @@ class Confluence(object):
 
             try :
                 ty = payload["mimetype"]
-            except TypeError or KeyError :
+            except (TypeError, KeyError) :
                 content_types = {
                     "gif": "image/gif",
                     "png": "image/png",
@@ -237,9 +244,8 @@ class Confluence(object):
 
             try :
                 confluence_name = payload ["confluence_name"]
-            except TypeError or KeyError :
+            except (TypeError, KeyError) :
                 confluence_name = filename
-
 
             attachment = {"fileName": confluence_name, "contentType": ty, "comment": comment}
             f = open(filename, "rb")
@@ -306,6 +312,17 @@ class Confluence(object):
         else:
             ret = self._server.confluence1.addLabelByName(self._token, labelName, objectId)
         return ret
+
+    def removeLabelByName (self, labelName, objectId) :
+        if self._token2 :
+            return self._server.confluence2.removeLabelByName (self._token2, labelName, objectId)
+        else :
+            return self._server.confluence.removeLabelByName (self._token2, labelName, objectId)
+
+    def getLabelsById (self, objectId) :
+        if self._token2 :
+            return self._server.confluence2.getLabelsById (self._token2, objectId)
+
 
     def getPageId(self, page, space):
         """
