@@ -2,6 +2,10 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 
+"""
+https://developer.atlassian.com/confdev/confluence-server-rest-api/confluence-xml-rpc-and-soap-apis/remote-confluence-methods
+"""
+
 try:
     import xmlrpclib
 except ImportError:
@@ -338,6 +342,9 @@ class Confluence(object):
             page = self._server.confluence1.getPage(self._token, space, page)
         return page['id']
 
+    def storePage (self, page) :
+        return self._server.confluence2.storePage (self._token2, page)
+
     def storePageContent(self, page, space, content, convert_wiki=True, parent_page=None):
         """
         Modifies the content of a Confluence page.
@@ -370,6 +377,9 @@ class Confluence(object):
             return self._server.confluence2.storePage(self._token2, data)
         else:
             return self._server.confluence1.storePage(self._token, data)
+
+    def updatePage (self, page, pageUpdateOptions) :
+        return self._server.confluence2.updatePage (self._token2, page, pageUpdateOptions)
 
     def renderContent(self, space, page, a='', b=None):
         """
@@ -416,11 +426,20 @@ class Confluence(object):
             return self._server.confluence.convertWikiToStorageFormat(self._token2, markup)
             #raise NotImplementedError("You cannot convert Wiki to Storage ")
 
+    def removePage (self, pageId) :
+        return self._server.confluence2.removePage (self._token2, pageId)
+
     def getSpaces(self):
         return self._server.confluence2.getSpaces(self._token2)
 
     def getPages(self, space):
         return self._server.confluence2.getPages(self._token2, space)
+
+    def search (self, query, parameters, maxResults) :
+        if parameters :
+            return self._server.confluence2.search (self._token2, query, parameters, maxResults)
+        else :
+            return self._server.confluence2.search (self._token2, query, maxResults)
 
     def getPagesWithErrors(self, stdout=True, caching=True):
         result = []
