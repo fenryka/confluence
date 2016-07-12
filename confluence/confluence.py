@@ -441,6 +441,17 @@ class Confluence(object):
         else :
             return self._server.confluence2.search (self._token2, query, maxResults)
 
+    def setContentPermissions (self, contentId, permissionType, permissions) :
+        """
+        permissionType : 'view' or 'edit'
+        """
+        return self._server.confluence2.setContentPermissions (
+            self._token2, contentId, permissionType, permissions)
+
+    def getContentPermissionSets (self, contentId) :
+        return self._server.confluence2.getContentPermissionSets (
+            self._token2, contentId)
+
     def getPagesWithErrors(self, stdout=True, caching=True):
         result = []
         cnt = 0
@@ -509,3 +520,4 @@ class Confluence(object):
             for x in stats:
                 print("'%s' : %s" % (x, stats[x]))
         return result
+
