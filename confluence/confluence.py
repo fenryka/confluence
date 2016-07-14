@@ -452,6 +452,10 @@ class Confluence(object):
         return self._server.confluence2.getContentPermissionSets (
             self._token2, contentId)
 
+    def removePage (self, pageId) :
+        return self._server.confluence2.removePage (
+            self._token2, pageId)
+
     def getPagesWithErrors(self, stdout=True, caching=True):
         result = []
         cnt = 0
