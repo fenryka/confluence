@@ -452,6 +452,9 @@ class Confluence(object):
         return self._server.confluence2.getContentPermissionSets (
             self._token2, contentId)
 
+    def getDescendents (self, contentId, pageId) :
+        return self._server.confluence2.getDescendents (self._token2, pageId)
+
     def removePage (self, pageId) :
         return self._server.confluence2.removePage (
             self._token2, pageId)
