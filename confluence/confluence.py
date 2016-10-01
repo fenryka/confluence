@@ -265,6 +265,21 @@ class Confluence(object):
             finally:
                 f.close()
 
+    def getAttachment (self, pageId, fileName, versionNumber = 0) :
+        if self._token2:
+            return self._server.confluence2.getAttachment (self._token2, pageId, fileName, str (versionNumber))
+        else :
+            return self._server.confluence1.getAttachment (self._token, pageId, fileName, str (versionNumber))
+
+
+
+    def getAttachmentData (self, pageId, fileName, versionNumber = 0) :
+        return self._server.confluence2.getAttachmentData (self._token2, pageId, fileName, str (versionNumber))
+
+    def moveAttachment (seld, originalContentId, originalName, newContentEntityId, newName) :
+        return self._server.confluence2.moveAttachment (
+            self._token2, originalContentId, originalContentId, newContentEntityId, newName)
+
     def getBlogEntries(self, space):
         """
         Returns a page object as a Vector.
